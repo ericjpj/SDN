@@ -83,6 +83,25 @@ table forward {
 
 // -end-
 
+//action _nop(d_tcp_port){
+    //modify_field(tcp.dstPort, d_tcp_port);
+//}
+
+action _nop(){
+    //no_op();
+}
+
+table acl {
+    reads{
+        tcp.srcPort : exact;
+        tcp.dstPort : exact;
+    }
+    actions{
+        _nop;
+        _drop;
+    }
+    size: 256;
+}
 
 action rewrite_mac(smac) {
     modify_field(ethernet.srcAddr, smac);
@@ -109,6 +128,7 @@ control ingress {
     // You should apply your acl table here ...
 
     // -end-
+    apply(acl);
 }
 
 control egress {

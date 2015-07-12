@@ -225,7 +225,7 @@ def output(partIdx):
     topo = FVTopo()
     net = Mininet( topo=topo, link = TCLink, controller=VideoSliceController, autoSetMacs=True )
     net.start()
-    time.sleep(1)
+    time.sleep(10)
 
     print "b. Starting Test"
     # Start pings

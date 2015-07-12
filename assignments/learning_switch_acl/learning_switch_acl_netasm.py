@@ -81,21 +81,24 @@ def main():
 
     # Implement the following:
     # 1. Create a new acl match table and add it in the table_decls (see above for examples)
-    #    a. Table should be named: acl_match_table
-    #    b. Table should have match fields type: TableFieldsCollection.MatchFields()
-    #       as we will be doing an exact match on ip src and dst (see eth_match_table).
-    #    c. Should be of size 16
-    #    d. Should be of type CAM: TableTypeCollection.CAM
+    #    a. Table should have match field types as we will be doing an exact match on ip src and dst
+    #       (see eth_match_table)
+    #    b. Should be of size 16
+    #    c. Should be of type CAM
     #
     # 2. Add two fields in the table for ip src and dst
-    #    a. Fields name should be ipv4_src, ipv4_dst
-    #       a. Should be of size 32: Size(32) ... don't forget to use Size() class, otherwise, it will raise type error.
-    #       b. Should have a binary match type: MatchTypeCollection.Binary
-    #    b. Add these fields in the table_fields list of the table
-    #       e.g., acl_match_table.table_fields[Field('ipv4_src')] = Size(32), MatchTypeCollection.Binary
-    #       This adds a field name ipv4_src in the table. The order in which you add fields matters. This will affect the lookups.
+    #    a. Should be of size 32 (i.e., ip field size)
+    #    b. Should have a binary match type
 
     # -end-
+    ACL_TABLE_SIZE = Size(16)
+    decls.table_decls[TableId('acl_match_table')] = \
+        Table(TableFieldsCollection.MatchFields(),
+            ACL_TABLE_SIZE,
+            TableTypeCollection.CAM)
+    acl_match_table = decls.table_decls[TableId('acl_match_table')]
+    acl_match_table.table_fields[Field('ipv4_src')] = Size(32), MatchTypeCollection.Binary
+    acl_match_table.table_fields[Field('ipv4_dst')] = Size(32), MatchTypeCollection.Binary
 
     # Code
     code = I.Code(
@@ -124,24 +127,18 @@ def main():
             # -begin-
 
             # Implement the following:
-            # 1. Add a 1-bit field to check if the packet was an ip packet or not
-            #    a. Name it: has_ip
-            # 2. Add ip header fields (note the size is specified in bits)
-            #    a. These headers should be named as follows:
-            #       ipv4_ver, ipv4_ihl, ipv4_dscp, ipv4_ecn, ipv4_tlen, 
-            #       ipv4_id, ipv4_flgs, ipv4_fo, ipv4_ttl, ipv4_prtcl, 
-            #       ipv4_chksm, ipv4_src, ipv4_dst
-            #        Note: you can find the size of these fields here: https://en.wikipedia.org/wiki/IPv4#Packet_structure
-            # 3. The add command is used as follows:
-            #    -- I.ADD(O.Field(Field('has_ip')), Size(1)),
-            #    a. ADD instruction adds a new field in the header
-            #       1. It takes two arguments: O.Field, Size(n)
-            #          a. O.Field takes one arugment of type Field, that specifies the name of the field to add.
-            #          b. Size(n) takes an int to specify the size.
-            #    Note: here I and O are short-term notations for InstructionCollection, and OperandCollection. 
-            #    You can find this under the netasm.netasm.core.__init__.py file
+            # 1. Add a 1-bit field say has_ip to check if the packet was an ip packet or not
+            # 2. Add ip header fields (not the size is specified in bits)
 
             # -end-
+	    I.ADD(O.Field(Field('has_ip')),
+                  Size(1)),
+            I.ADD(O.Field(Field('ipv4_src')),
+                  Size(32)),
+            I.ADD(O.Field(Field('ipv4_dst')),
+                  Size(32)),
+
+
 
             # Load fields with default values
             I.LD(O.Field(Field('eth_dst')),
@@ -155,16 +152,15 @@ def main():
             # -begin-
 
             # Load ip header fields with default value of 0
-            # Here, the Load instruction is used as follows:
-            # -- I.LD(O.Field(Field('has_ip')), O.Value(Value(0, Size(1)))),
-            # a. Here it takes two argments of type: O.Field, O.Value
-            #    1. O.Field is used to specify the field to load the value in
-            #    2. O.Value is used to specify the value to load in the field
-            #       a. O.Value takes an argument of type Value. Value takes two arguments: value, Size(n)
-            #          1. value is the loaded value
-            #          2. Size(n) is the size of value i.e., how many bits the value can take.
 
             # -end
+	    I.LD(O.Field(Field('has_ip')),
+                 O.Value(Value(0, Size(1)))),
+            I.LD(O.Field(Field('ipv4_src')),
+                 O.Value(Value(0, Size(32)))),
+            I.LD(O.Field(Field('ipv4_dst')),
+                 O.Value(Value(0, Size(32)))),
+
 
             # Parse ethernet
             # load ethernet header fields from the packet
@@ -183,38 +179,43 @@ def main():
 
             # Add your logic here ...
             # -begin-
-            
+
             # Implement the following:
             # 1. Check if the incoming packet is ip (use BR instruction for this purpose)
-            #    a. if it's not ip, load has_ip with value 0 and jump to l2 learning
-            #    b. else if is ip, load has_ip with value 1 and load the remaining ip field values from the packet
-            # 2. To implement this part of the code you will be using the following instructions: I.BR, I.LD, I.JMP, I.LBL
-            #    a. Branch field is used as follows:
-            #       -- I.BR(O.Field(Field('eth_type')), Op.Eq, O.Value(Value(ETH_IP_TYPE, Size(16))), Label('LBL_PARSE_0')),
-            #       1. Here it takes four arguments: O.Field, Op, O.Vlaue, Label
-            #          a. Op is the operator used for comparison between the field and the value
-            #          b. If the comparison is true, jump to the label else fall through
-            #    b. For loading field values from the packet, I.LD is used as follows:
-            #       -- I.LD(O.Field(Field('ipv4_ver')), O.Location(Location(O.Value(Value(112, Size(16)))))),
-            #       1. Here it takes two arguments: O.Field, O.Location
-            #          a. O.Location specifies the offset for the value to read from the packet. 
-            #             The length is known by the field used e.g., for eth_src it's 48.
-            #             1. It takes a Location argument, which itself takes a Value argument.
-            #    c. Jump instruction is used as follows:
-            #       -- I.JMP(Label('LBL_L2')),
-            #       1. This means unconditionally jump to LBL_L2
-            #    d. Label instrucitons is used as follows:
-            #       -- I.LBL(Label('LBL_PARSE_0')),
-            #       1. Specifies a target label for jump and branch instrucitons
+            #    a. if not ip, load has_ip with value 0 and jump to l2 learning
+            #    b. else if is ip, load has_ip with value 1 and load the ip field values from the packet
 
             # -end-
+	    I.BR(O.Field(Field('eth_type')),
+                             Op.Neq,
+                             O.Value(Value(ETH_IP_TYPE,Size(16))),
+                             Label('LBL_L2')),
+	    #I.BR(O.Field(Field('eth_type')),
+            #                 Op.Eq,
+            #                 O.Value(Value(ETH_IP_TYPE,Size(16))),
+            #                 Label('LBL_PARSE_0')),
+
+	    #I.LBL(Label('LBL_PARSE_0')),
+	    I.LD(O.Field(Field('has_ip')),
+                  O.Value(Value(1, Size(1)))),
+            
+	    I.LD(O.Field(Field('ipv4_src')),
+                 O.Location(
+                     Location(
+                         O.Value(Value(208, Size(16)))))),
+            I.LD(O.Field(Field('ipv4_dst')),
+                 O.Location(
+                     Location(
+                         O.Value(Value(240, Size(16)))))),
 
             #################
             ## L2 Learning ##
             #################
 
             I.LBL(Label('LBL_L2')),
-
+	    I.LD(O.Field(Field('has_ip')),
+                  O.Value(Value(0, Size(1)))),
+            
             I.ATM(
                 I.Code(
                     Fields(Field('eth_dst'), Field('eth_src')),
@@ -335,36 +336,45 @@ def main():
             #########
 
             I.LBL(Label('LBL_ACL')),
-
-            # Add your logic here ...
+	    
+	    #  Add your logic here ...
             # -begin-
 
             # Implement the following:
             # 1. Check if the packet is ip using has_ip field
             #    a. if not ip, jump to the HLT instruction
-            #    b. else if is ip, lookup in the acl match table
+            #    b. else if is ip, lookup in the acl match table (see eth_match_table lookup example above)
             #       1. if no match, drop the packet (you can use the DRP instruction here, but remember to jump to the
-            #          HLT instruction
+            #          HLT instruction)
             #       2. else pass through (you can use the ID instruction for this)
-            #  2. To implement this code block you will be using the following instructions: I.BR, I.ID, I. JMP, I.LBL, I.ADD, I.LKt, I.DRP
-            #     a. Identity (ID) instruction is used as follows:
-            #        -- I.ID()
-            #        1. It's no op instruction. Does nothing.
-            #     b. Drop instruction is used as follows:
-            #        -- I.DRP(Reason('no match in the acl table', '')),
-            #        1. Tags the packet to be dropped
-            #        2. Takes one argument of type Reason. Reason further takes two arguments: reason (string), description (string)
-            #     c. Lookup table instruction is used as follows:
-            #        -- I.LKt(O.Field(Field('index')), TableId('eth_match_table'), O.Operands_(O.Field(Field('eth_src')), O.Field(Field('eth_dst')))),
-            #        1. Here it takes three arguments: O.Field, TableId, O.Operands_
-            #           a. O.Field is the matched index return by the lookup. It's -1 if there's no match
-            #           b. TableId specifies the table to be used in the lookup
-            #           c. O.Operands_ specifies the list of fields to be used in the lookup. Note that order of fields matters here. 
-            #              1. In the above example, it means that eth_src is matched with the first column of the table and eth_dst with the second. 
-            #              2. Also, Operands_ type means that only Field and Value types can be used for the comparison i.e., you cannot used Location type here.
 
             # -end-
+	    #I.LD(O.Field(Field('has_ip')),
+            #      O.Value(Value(1, Size(1)))),	    
+            #I.BR(O.Field(Field('has_ip')),
+            #                 Op.Neq,
+            #                 O.Value(Value(1, Size(1))),
+            #                 Label('LBL_HLT')),
 
+	    
+	    I.ADD(O.Field(Field('index')),Size(16)),
+	    #I.LD(O.Field(Field('index')),
+            #     O.Value(Value(-1, Size(16)))),
+		
+	    I.LKt(O.Field(Field('index')),
+                              TableId('acl_match_table'),
+                              O.Operands_(
+                                  O.Field(Field('ipv4_src')),O.Field(Field('ipv4_dst')))),
+	    I.BR(O.Field(Field('index')),
+                             Op.Neq,
+                             O.Value(Value(-1, Size(16))),
+                             Label('PASS')),
+
+	    I.DRP(Reason('not match in the table', '')),
+	    I.JMP(Label('LBL_HLT')),
+
+	    I.LBL(Label('PASS')),
+	    I.ID(),
             ##########
             ## Halt ##
             ##########

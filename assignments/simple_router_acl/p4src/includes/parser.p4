@@ -80,6 +80,7 @@ parser parse_ipv4 {
 
         // -end-
 
+        IPV4_TCP : parse_tcp;
         default: ingress;
     }
 }
@@ -91,4 +92,11 @@ parser parse_ipv4 {
 // 1. create a tcp header instance, named: `tcp`
 // 2. write the tcp parser function, named: `parse_tcp`
 
+
 // -end-
+
+header tcp_t tcp;
+parser parse_tcp{
+    extract(tcp);
+    return ingress;
+}

@@ -1,0 +1,114 @@
+15:28:07.918  root      : INFO    : ++++++++ Fri Jul  3 15:28:07 2015 ++++++++
+15:28:07.963  scapy.runtime: WARNING : No route found for IPv6 destination :: (no default route?)
+15:28:08.010  root      : INFO    : Importing platform: eth
+15:28:08.011  root      : DEBUG   : Configuration: {'xunit_dir': 'xunit', 'disable_ipv6': False, 'minsize': 0, 'list_test_names': False, 'switch_ip': None, 'controller_host': '0.0.0.0', 'allow_user': False, 'enable_erspan': True, 'default_negative_timeout': 0.1, 'platform': 'eth', 'log_dir': None, 'xunit': False, 'platform_dir': '/home/vagrant/p4factory/submodules/oft-infra/platforms', 'profile': False, 'default_timeout': 2.0, 'platform_args': None, 'relax': False, 'random_seed': None, 'interfaces': [], 'port_map': {0: 'veth1', 1: 'veth3', 2: 'veth5', 3: 'veth7', 4: 'veth9', 5: 'veth11', 6: 'veth13', 7: 'veth15', 8: 'veth17'}, 'enable_nvgre': False, 'openflow_version': '1.0', 'controller_port': 6653, 'test_file': None, 'profile_file': 'profile.out', 'fail_skipped': False, 'test_params': 'None', 'enable_vxlan': True, 'test_dir': 'of-tests/tests/', 'list': False, 'test_spec': '', 'enable_mpls': False, 'debug': 'verbose', 'enable_geneve': True, 'log_file': 'oft.log'}
+15:28:08.011  root      : INFO    : OF port map: {0: 'veth1', 1: 'veth3', 2: 'veth5', 3: 'veth7', 4: 'veth9', 5: 'veth11', 6: 'veth13', 7: 'veth15', 8: 'veth17'}
+15:28:08.011  root      : INFO    : Autogen random seed: 5673367
+15:28:08.011  dataplane : WARNING : Missing pypcap, VLAN tests may fail. See README for installation instructions.
+15:28:08.012  root      : INFO    : *** TEST RUN START: Fri Jul  3 15:28:08 2015
+15:28:08.013  root      : INFO    : ** START TEST CASE echo.EchoTest
+15:28:08.014  root      : INFO    : ** END TEST CASE echo.EchoTest
+15:28:08.015  root      : INFO    : ** START TEST CASE acl.AclTest
+15:28:08.029  dataplane : DEBUG   : Sending 100 bytes to port 2
+15:28:08.030  dataplane : DEBUG   : Pkt len 100 in on port 1
+15:28:08.031  root      : DEBUG   : Negative check for pkt on port 0
+15:28:08.031  dataplane : DEBUG   : Grabbing packet
+15:28:08.031  dataplane : DEBUG   : Out of packets on port 0
+15:28:08.031  dataplane : DEBUG   : Did not find packet
+15:28:08.132  dataplane : DEBUG   : Poll time out, no packet from 0
+15:28:08.132  root      : DEBUG   : Checking for pkt on port 1
+15:28:08.132  dataplane : DEBUG   : Grabbing packet
+15:28:08.132  dataplane : DEBUG   : Checking packet from port 1
+15:28:08.132  root      : DEBUG   : Negative check for pkt on port 2
+15:28:08.132  dataplane : DEBUG   : Grabbing packet
+15:28:08.132  dataplane : DEBUG   : Out of packets on port 2
+15:28:08.132  dataplane : DEBUG   : Did not find packet
+15:28:08.232  dataplane : DEBUG   : Poll time out, no packet from 2
+15:28:08.233  root      : DEBUG   : Negative check for pkt on port 3
+15:28:08.233  dataplane : DEBUG   : Grabbing packet
+15:28:08.233  dataplane : DEBUG   : Out of packets on port 3
+15:28:08.233  dataplane : DEBUG   : Did not find packet
+15:28:08.333  dataplane : DEBUG   : Poll time out, no packet from 3
+15:28:08.334  root      : DEBUG   : Negative check for pkt on port 4
+15:28:08.334  dataplane : DEBUG   : Grabbing packet
+15:28:08.334  dataplane : DEBUG   : Out of packets on port 4
+15:28:08.334  dataplane : DEBUG   : Did not find packet
+15:28:08.434  dataplane : DEBUG   : Poll time out, no packet from 4
+15:28:08.435  root      : DEBUG   : Negative check for pkt on port 5
+15:28:08.435  dataplane : DEBUG   : Grabbing packet
+15:28:08.435  dataplane : DEBUG   : Out of packets on port 5
+15:28:08.436  dataplane : DEBUG   : Did not find packet
+15:28:08.536  dataplane : DEBUG   : Poll time out, no packet from 5
+15:28:08.536  root      : DEBUG   : Negative check for pkt on port 6
+15:28:08.537  dataplane : DEBUG   : Grabbing packet
+15:28:08.538  dataplane : DEBUG   : Out of packets on port 6
+15:28:08.538  dataplane : DEBUG   : Did not find packet
+15:28:08.638  dataplane : DEBUG   : Poll time out, no packet from 6
+15:28:08.638  root      : DEBUG   : Negative check for pkt on port 7
+15:28:08.639  dataplane : DEBUG   : Grabbing packet
+15:28:08.639  dataplane : DEBUG   : Out of packets on port 7
+15:28:08.639  dataplane : DEBUG   : Did not find packet
+15:28:08.740  dataplane : DEBUG   : Poll time out, no packet from 7
+15:28:08.741  root      : DEBUG   : Negative check for pkt on port 8
+15:28:08.741  dataplane : DEBUG   : Grabbing packet
+15:28:08.741  dataplane : DEBUG   : Out of packets on port 8
+15:28:08.742  dataplane : DEBUG   : Did not find packet
+15:28:08.842  dataplane : DEBUG   : Poll time out, no packet from 8
+15:28:08.842  root      : DEBUG   : Checking for unexpected packets on all ports
+15:28:08.843  dataplane : DEBUG   : Grabbing packet
+15:28:08.843  dataplane : DEBUG   : Out of packets on all ports
+15:28:08.843  dataplane : DEBUG   : Did not find packet
+15:28:08.943  dataplane : DEBUG   : Poll time out, no packet from None
+15:28:08.957  dataplane : DEBUG   : Sending 100 bytes to port 1
+15:28:08.958  dataplane : DEBUG   : Pkt len 100 in on port 2
+15:28:08.959  root      : DEBUG   : Negative check for pkt on port 0
+15:28:08.959  dataplane : DEBUG   : Grabbing packet
+15:28:08.959  dataplane : DEBUG   : Out of packets on port 0
+15:28:08.959  dataplane : DEBUG   : Did not find packet
+15:28:09.059  dataplane : DEBUG   : Poll time out, no packet from 0
+15:28:09.059  root      : DEBUG   : Negative check for pkt on port 1
+15:28:09.060  dataplane : DEBUG   : Grabbing packet
+15:28:09.060  dataplane : DEBUG   : Out of packets on port 1
+15:28:09.060  dataplane : DEBUG   : Did not find packet
+15:28:09.160  dataplane : DEBUG   : Poll time out, no packet from 1
+15:28:09.161  root      : DEBUG   : Checking for pkt on port 2
+15:28:09.161  dataplane : DEBUG   : Grabbing packet
+15:28:09.161  dataplane : DEBUG   : Checking packet from port 2
+15:28:09.162  root      : DEBUG   : Negative check for pkt on port 3
+15:28:09.162  dataplane : DEBUG   : Grabbing packet
+15:28:09.162  dataplane : DEBUG   : Out of packets on port 3
+15:28:09.162  dataplane : DEBUG   : Did not find packet
+15:28:09.262  dataplane : DEBUG   : Poll time out, no packet from 3
+15:28:09.263  root      : DEBUG   : Negative check for pkt on port 4
+15:28:09.263  dataplane : DEBUG   : Grabbing packet
+15:28:09.264  dataplane : DEBUG   : Out of packets on port 4
+15:28:09.264  dataplane : DEBUG   : Did not find packet
+15:28:09.364  dataplane : DEBUG   : Poll time out, no packet from 4
+15:28:09.364  root      : DEBUG   : Negative check for pkt on port 5
+15:28:09.365  dataplane : DEBUG   : Grabbing packet
+15:28:09.365  dataplane : DEBUG   : Out of packets on port 5
+15:28:09.365  dataplane : DEBUG   : Did not find packet
+15:28:09.465  dataplane : DEBUG   : Poll time out, no packet from 5
+15:28:09.466  root      : DEBUG   : Negative check for pkt on port 6
+15:28:09.466  dataplane : DEBUG   : Grabbing packet
+15:28:09.466  dataplane : DEBUG   : Out of packets on port 6
+15:28:09.467  dataplane : DEBUG   : Did not find packet
+15:28:09.566  dataplane : DEBUG   : Poll time out, no packet from 6
+15:28:09.567  root      : DEBUG   : Negative check for pkt on port 7
+15:28:09.567  dataplane : DEBUG   : Grabbing packet
+15:28:09.568  dataplane : DEBUG   : Out of packets on port 7
+15:28:09.568  dataplane : DEBUG   : Did not find packet
+15:28:09.668  dataplane : DEBUG   : Poll time out, no packet from 7
+15:28:09.668  root      : DEBUG   : Negative check for pkt on port 8
+15:28:09.669  dataplane : DEBUG   : Grabbing packet
+15:28:09.669  dataplane : DEBUG   : Out of packets on port 8
+15:28:09.669  dataplane : DEBUG   : Did not find packet
+15:28:09.770  dataplane : DEBUG   : Poll time out, no packet from 8
+15:28:09.770  root      : DEBUG   : Checking for unexpected packets on all ports
+15:28:09.771  dataplane : DEBUG   : Grabbing packet
+15:28:09.771  dataplane : DEBUG   : Out of packets on all ports
+15:28:09.771  dataplane : DEBUG   : Did not find packet
+15:28:09.871  dataplane : DEBUG   : Poll time out, no packet from None
+15:28:09.872  root      : INFO    : ** END TEST CASE acl.AclTest
+15:28:09.874  root      : INFO    : *** TEST RUN END  : Fri Jul  3 15:28:09 2015
+15:28:09.874  dataplane : INFO    : Thread exit

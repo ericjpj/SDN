@@ -1,5 +1,7 @@
 ## NetASM Assignment
 
+**NOTE:** Before you start the NetASM assignment, make sure you update your repo with "git pull" and then do "vagrant halt" and "vagrant up", this is required so vagrant installs NetASM and all dependencies
+
 In this exercise, you will learn how to define new data-plane layouts, add custom state elements like tables, and control how each packet is processed in the data plane. To do so, you will be learning and using **NetASM**, a new domain-specific language for configuring programmable data planes on a variety of targets.
 
 NetASM is analogous to an x86 or MIPS-like instructions set.  However, unlike updating main memory and registers, it defines the layout (i.e., control-flow and states) of the data plane. Control-flow defines how the packet is traversed through the data plane, and state refers to the type of memory element (i.e., tables). These state elements have a well-defined data structure and type declaration in NetASM, which makes it easy to identify bugs early in the compilation process.
@@ -22,27 +24,6 @@ In order to do this, you have to update the following aspects of the learning sw
 * Add support for reading and parsing ip fields
 * Write instructions for doing access control using ip's source and destination addresses
 
-### Update your VM to get the assignment
-
-1- Update your local repo
-```bash
-$ git pull
-```
-
-2- Shutdown your VM
-```bash
-vagrant halt
-```
-3- Start your VM (it should install all the new dependencies)
-```bash
-$ vagrant up
-```
-
-4- Excecute the required provisioning scripts
-```bash
-$ vagrant provision
-```
-
 #### 1. Copy the assignment
 
 * Copy the `learning_switch_acl` directory to the `netasm/netasm/examples` folder
@@ -62,10 +43,10 @@ Run Mininet script `learning_switch_acl_mininet.py`.
 
 ``` bash
 $ cd ~
-$ sudopy python ~/netasm/netasm/examples/learning_switch_acl/learning_switch_acl_mininet.py
+$ sudopy ~/netasm/netasm/examples/learning_switch_acl/learning_switch_acl_mininet.py
 ```
 
--> Note: make sure that you run this and the remaining scripts using `sudopy` (a bash alias that sets all necesary python paths)
+> Note: make sure that you run this and the remaining scripts using `sudopy`
 
 The script will halt at some point and you should see the following output.
 
@@ -100,7 +81,7 @@ Now, open up another terminal and run the POX (controller) script.
 
 ``` bash
 $ cd ~
-$ sudopy python ./pox/pox.py netasm.examples.learning_switch_acl.learning_switch_acl_pox
+$ sudopy ./pox/pox.py netasm.examples.learning_switch_acl.learning_switch_acl_pox
 ```
 
 You should see that after a short time, both NetASM datapath and POX controller are connected. Upong successful connection, you should see the following ouput on the POX terminal.

@@ -65,33 +65,12 @@ class Firewall (EventMixin):
     def rule_update(self, flow):
         infected_state = self.get_flowstate_map(flow, 'infected')
         exempt_state = self.get_flowstate_map(flow, 'exempt')
-        srcmac_field = flow.get('srcmac')
+        
         ### --- Add your logic here ---- ###
         
         # Forward to gardenwall if both True.
-	if infected_state =='True' and exempt_state == 'True':
-		print("Infected and exempt")
-        	msg = of.ofp_flow_mod()
-		#msg.match.dl_src = EthAddr(str(flow['srcmac']))
-		msg.match.dl_src = EthAddr("00:00:00:00:00:01")
-        	msg.actions.append(of.ofp_action_nw_addr.set_dst(IPAddr('10.0.0.3')))
-        	msg.actions.append(of.ofp_action_dl_addr.set_dst(EthAddr('00:00:00:00:00:03')))
-        	msg.actions.append(of.ofp_action_output(port=3))
 
-		#msg = build_rewrite_rule(flow)
-                self.eventSwitch.connection.send(msg)	
-	elif infected_state == 'True':
-		print('Infected and NOT exempt')			
-        	msg = of.ofp_flow_mod()
-		msg.match.dl_src = EthAddr("00:00:00:00:00:01")
-            	#msg.match.dl_src = EthAddr(str(flow['srcmac']))
-		msg.actions.append(of.ofp_action_output(port = of.OFPP_NONE))	
-                self.eventSwitch.connection.send(msg)	
-	else:
-		print("not infected and passthrough")	
-        	msg = of.ofp_flow_mod(command=of.OFPFC_DELETE)	
-                self.eventSwitch.connection.send(msg)	
-		#self.clear_block(flow)
+
         # Else if infected is True, drop.
 
 

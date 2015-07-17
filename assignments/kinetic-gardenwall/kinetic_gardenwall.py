@@ -1,11 +1,3 @@
-'''
-Coursera:
-- Software Defined Networking (SDN) course
--- Module 8 Programming Assignment
-
-Professor: Nick Feamster
-Teaching Assistant: Arpit Gupta
-'''
 
 from pyretic.lib.corelib import *
 from pyretic.lib.std import *
@@ -17,7 +9,6 @@ from pyretic.kinetic.util.rewriting import *
 from pyretic.kinetic.apps.mac_learner import *
 
 #####################################################################################################
-# Author: Hyojoon Kim
 # * App launch
 #   - pyretic.py pyretic.kinetic.apps.gardenwall
 #
@@ -50,8 +41,7 @@ class gardenwall(DynamicPolicy):
         ### DEFINE THE LPEC FUNCTION
 
         def lpec(f):
-            # Your logic here
-            # return match =
+            return match(srcip=f['srcip'])
 
         ## SET UP TRANSITION FUNCTIONS
 
@@ -67,11 +57,10 @@ class gardenwall(DynamicPolicy):
         def policy(self):
             # If exempt, redirect to gardenwall. 
             #  - rewrite dstip to 10.0.0.3
-            self.case(test_and_true(V('exempt'),V('infected')), C(redirectToGardenWall()))
+            self.case(is_true(V('infected')) & is_true(V('exempt')),C(redirectToGardenWall()))
 
             # If infected, drop
-            # Your logic here
-            # self.case ()
+            self.case(is_true(V('infected')) ,C(drop))
 
             # Else, identity    
             self.default(C(identity))
@@ -83,10 +72,12 @@ class gardenwall(DynamicPolicy):
             infected=FSMVar(type=BoolType(), 
                             init=False, 
                             trans=infected),
-            # Your logic here
-            # exempt =
-            # policy =
-            )
+            exempt=FSMVar(type=BoolType(), 
+                            init=False, 
+                            trans=exempt),
+            policy=FSMVar(type=Type(Policy,{drop,identity,redirectToGardenWall()}),
+                          init=identity,
+                          trans=policy))
 
         ### SET UP POLICY AND EVENT STREAMS
 
@@ -109,21 +100,24 @@ def main():
     mc.add_spec("FAIRNESS\n  exempt;")
 
     # Now, traffic is dropped only when exempt is false and infected is true
-    mc.add_spec("SPEC AG (infected & !exempt -> AX policy=policy_2)")
+    mc.add_spec("SPEC AG (infected & !exempt -> AX policy=policy_1)")
 
     # If exempt is true, next policy state to redirect to gardenwall, even if infected
-    mc.add_spec("SPEC AG (infected & exempt -> AX policy=policy_1)")
+    mc.add_spec("SPEC AG (infected & exempt -> AX policy=policy_3)")
 
     # If infected is false, next policy state is always 'allow'
-    mc.add_spec("SPEC AG (!infected -> AX policy=policy_3)")
+    mc.add_spec("SPEC AG (!infected -> AX policy=policy_2)")
 
     ### Policy state is 'allow' until infected is true.
-    mc.add_spec("SPEC A [ policy=policy_3 U infected ]")
+    mc.add_spec("SPEC A [ policy=policy_2 U infected ]")
 
     # Save NuSMV file
     mc.save_as_smv_file()
 
     # Verify
     mc.verify()
+
+    # Ask deployment
+    ask_deploy()
 
     return pol >> mac_learner()

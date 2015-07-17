@@ -28,12 +28,10 @@ from pyretic.lib.corelib import *
 from pyretic.lib.std import *
 
 # insert the name of the module and policy you want to import
-from pyretic.core.network import EthAddr,IPAddr
 from pyretic.modules.mac_learner import mac_learner
 from csv import DictReader
 from collections import namedtuple
 from pyretic.kinetic.drivers.json_event import JSONEvent
-from pyretic.kinetic.util.rewriting import *
 from gardenlib import redirectToGardenWall
 import os
 
@@ -76,25 +74,12 @@ class pyretic_gardenwall(DynamicPolicy):
                 exempt_state = self.get_flowstate_map(f, 'exempt')
                 
                 ### --- Add your logic here ---- ###
-		print(infected_state)
-                if infected_state == 'False':
-			print("Not infected")
-			#self.policy = [];
-			this_policy = passthrough;
-		else:
-			if exempt_state != 'True':
-				#print(srcmac_field)
-				print("infected and NOT exempt")
-				this_policy = ~match(srcmac=srcmac_field)
                 
-                		# Forward to gardenwall if both True.
-                	elif  exempt_state == 'True':
-				print("Infected and exempt")
-				# modify destnation MAC and IP
-				#this_policy = modify(dstmac = EthAddr("00:00:00:00:00:03"))>>modify(dstip = IPAddr("10.0.0.3"))
-				client_ips = [IP('10.0.0.1'),IP('10.0.0.2')]
-				this_policy = rewriteDstIPAndMAC(client_ips,'10.0.0.3') + (match(srcmac=EthAddr("00:00:00:00:00:03"))>>passthrough)
-		# Add   
+                # Forward to gardenwall if both True.
+                
+                # Else if infected is True, drop.
+                
+                # Add
                 policies.append(this_policy)
 
         if len(policies)==0:
